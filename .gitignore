@@ -1,0 +1,58 @@
+# Builds y compilados
+target/
+build/
+out/
+*.jar
+*.class
+*.war
+*.ear
+
+# Dependencias y herramientas
+tools/
+*.zip
+*.tar.gz
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+dependency-reduced-pom.xml
+
+# Java
+*.ctxt
+.mtj.tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Archivos temporales
+*.tmp
+*.temp
+*.cache
+*.bak
+*.old
+
