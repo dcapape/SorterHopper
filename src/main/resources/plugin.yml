@@ -1,5 +1,5 @@
 name: SorterHopper
 version: 1.0.0
-main: com.example.sorterhopper.SorterHopperPlugin
+main: com.diegocapape.sorterhopper.SorterHopperPlugin
 description: Hopper que filtra ítems personalizados
 api-version: 1.21
