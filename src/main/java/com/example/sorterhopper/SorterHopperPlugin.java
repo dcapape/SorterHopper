@@ -23,7 +23,9 @@ public class SorterHopperPlugin extends JavaPlugin {
         this.recipeKey = new NamespacedKey(this, "sorter_hopper_recipe");
 
         registerRecipe();
-        Bukkit.getPluginManager().registerEvents(new SorterHopperListener(this), this);
+        SorterHopperListener listener = new SorterHopperListener(this);
+        Bukkit.getPluginManager().registerEvents(listener, this);
+        listener.startItemCheckTask();
     }
 
     @Override
