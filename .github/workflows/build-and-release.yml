@@ -45,7 +45,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: target/sorterhopper-*.jar
-          tag: v${{ steps.version.outputs.version }}-${{ steps.commit.outputs.sha }}
+          tag_name: v${{ steps.version.outputs.version }}-${{ steps.commit.outputs.sha }}
           name: Release v${{ steps.version.outputs.version }}-${{ steps.commit.outputs.sha }}
           generate_release_notes: true
           draft: false
