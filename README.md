@@ -47,16 +47,21 @@ You will get a **Sorter Hopper**.
 ### Requirements
 
 - Java 17 or higher
-- Maven 3.9.6 (included in `tools/`)
+- Maven 3.9.6 (included in `tools/` or use system Maven)
 
 ### Compile
 
 ```powershell
-cd devplugins
 .\tools\apache-maven-3.9.6\bin\mvn.cmd clean package
 ```
 
-The JAR will be generated in: `devplugins/target/sorterhopper-1.0.0-SNAPSHOT.jar`
+Or if Maven is in your PATH:
+
+```bash
+mvn clean package
+```
+
+The JAR will be generated in: `target/sorterhopper-1.0.0-SNAPSHOT.jar`
 
 ## 🏗️ Technical Architecture
 
@@ -157,7 +162,7 @@ This project is private code. All rights reserved.
 ### Project Structure
 
 ```
-devplugins/
+.
 ├── src/main/java/com/example/sorterhopper/
 │   ├── SorterHopperPlugin.java    # Main class
 │   └── SorterHopperListener.java  # Event handler
