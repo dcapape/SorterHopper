@@ -56,3 +56,6 @@ desktop.ini
 *.bak
 *.old
 
+# Scripts con información sensible
+deploy-plugin.ps1
+
