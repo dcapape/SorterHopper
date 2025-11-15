@@ -1,172 +1,172 @@
 # SorterHopper Plugin
 
-Plugin de Spigot para Minecraft 1.21.10 que añade un hopper filtrador inteligente con sistema de absorción mejorado.
+Spigot plugin for Minecraft 1.21.10 that adds an intelligent filtering hopper with improved absorption system.
 
-## 🎯 Características Principales
+## 🎯 Main Features
 
-- **Filtrado Inteligente**: Solo recoge items que coinciden exactamente con los items del filtro
-- **Alta Eficiencia**: Sistema de tracking continuo y atracción de items aceptados para máxima captura
-- **Múltiples Puntos de Interceptación**: Detecta y filtra items desde que aparecen hasta que son recogidos
-- **Funciona en Todos los Escenarios**: 
-  - Items sueltos (entidades)
-  - Items en agua corriendo
-  - Items desde cofres y tolvas
-  - Items rápidos en hielo azul
+- **Intelligent Filtering**: Only collects items that exactly match the filter items
+- **High Efficiency**: Continuous tracking system and attraction of accepted items for maximum capture
+- **Multiple Interception Points**: Detects and filters items from spawn to pickup
+- **Works in All Scenarios**: 
+  - Loose items (entities)
+  - Items in flowing water
+  - Items from chests and hoppers
+  - Fast items on blue ice
 
-## 📦 Instalación
+## 📦 Installation
 
-1. Descarga el JAR desde [Releases](https://github.com/tu-usuario/SorterHopper/releases)
-2. Coloca `SorterHopper.jar` en la carpeta `plugins/` de tu servidor Spigot
-3. Reinicia el servidor
+1. Download the JAR from [Releases](https://github.com/dcapape/SorterHopper/releases)
+2. Place `SorterHopper.jar` in the `plugins/` folder of your Spigot server
+3. Restart the server
 
-## 🎮 Uso
+## 🎮 Usage
 
-### Craftear el Sorter Hopper
+### Crafting the Sorter Hopper
 
-Coloca en la mesa de crafteo:
+Place in the crafting table:
 - 1x Hopper
 - 1x Redstone
 
-Obtendrás un **Sorter Hopper**.
+You will get a **Sorter Hopper**.
 
-### Configurar el Filtro
+### Configuring the Filter
 
-1. Coloca el Sorter Hopper donde necesites filtrar items
-2. Haz clic derecho para abrir su inventario
-3. Coloca los items que quieres que recoja (uno o más tipos)
-4. El hopper solo recogerá items que coincidan exactamente con los del filtro
+1. Place the Sorter Hopper where you need to filter items
+2. Right-click to open its inventory
+3. Place the items you want it to collect (one or more types)
+4. The hopper will only collect items that exactly match the filter
 
-### Comportamiento
+### Behavior
 
-- **Filtro vacío**: Recoge todos los items (comportamiento normal de hopper)
-- **Filtro con items**: Solo recoge items que coinciden (tipo, metadatos, encantamientos, etc.)
-- **Items rechazados**: Se ignoran y continúan su curso natural
+- **Empty filter**: Collects all items (normal hopper behavior)
+- **Filter with items**: Only collects matching items (type, metadata, enchantments, etc.)
+- **Rejected items**: Are ignored and continue their natural course
 
-## 🔧 Compilación
+## 🔧 Compilation
 
-### Requisitos
+### Requirements
 
-- Java 17 o superior
-- Maven 3.9.6 (incluido en `devplugins/tools/`)
+- Java 17 or higher
+- Maven 3.9.6 (included in `tools/`)
 
-### Compilar
+### Compile
 
 ```powershell
 cd devplugins
 .\tools\apache-maven-3.9.6\bin\mvn.cmd clean package
 ```
 
-El JAR se generará en: `devplugins/target/sorterhopper-1.0.0-SNAPSHOT.jar`
+The JAR will be generated in: `devplugins/target/sorterhopper-1.0.0-SNAPSHOT.jar`
 
-## 🏗️ Arquitectura Técnica
+## 🏗️ Technical Architecture
 
-### Sistema de Filtrado Multi-Capa
+### Multi-Layer Filtering System
 
-El plugin implementa un sistema de filtrado en múltiples capas para máxima eficiencia:
+The plugin implements a multi-layer filtering system for maximum efficiency:
 
-#### 1. Interceptación Temprana (`ItemSpawnEvent`)
-- Detecta items cuando aparecen en el mundo
-- Radio de detección: 5.0 bloques
-- Área de verificación: cubo 11x11x11
-- Marca items para tracking continuo si están cerca de un sorterHopper
+#### 1. Early Interception (`ItemSpawnEvent`)
+- Detects items when they spawn in the world
+- Detection radius: 5.0 blocks
+- Verification area: 11x11x11 cube
+- Marks items for continuous tracking if near a sorterHopper
 
-#### 2. Tracking Continuo (`checkNearbyItems`)
-- Se ejecuta cada tick (0.05 segundos)
-- Verifica todos los items cerca de sorterHoppers
-- Radio dinámico: 5.0 bloques para items rápidos, 4.0 para lentos
-- Predicción de posición futura hasta 6 ticks adelante para items rápidos
-- Atrae items aceptados hacia el hopper
+#### 2. Continuous Tracking (`checkNearbyItems`)
+- Runs every tick (0.05 seconds)
+- Verifies all items near sorterHoppers
+- Dynamic radius: 5.0 blocks for fast items, 4.0 for slow ones
+- Future position prediction up to 6 ticks ahead for fast items
+- Attracts accepted items towards the hopper
 
-#### 3. Filtrado en Pickup (`InventoryPickupItemEvent`)
-- Última línea de defensa antes de que el item entre al hopper
-- Prioridad: `HIGHEST`
-- Cancela el evento si el item no coincide con el filtro
+#### 3. Pickup Filtering (`InventoryPickupItemEvent`)
+- Last line of defense before item enters the hopper
+- Priority: `HIGHEST`
+- Cancels event if item doesn't match the filter
 
-#### 4. Sistema de Atracción
+#### 4. Attraction System
 
-Items aceptados son atraídos hacia el hopper:
-- **< 0.5 bloques**: Teleportación directa al hopper
-- **0.5-1.5 bloques**: Atracción con fuerza 0.3
-- **> 3.0 bloques**: Removido del tracking
+Accepted items are attracted towards the hopper:
+- **< 0.5 blocks**: Direct teleportation to hopper
+- **0.5-1.5 blocks**: Attraction with force 0.3
+- **> 3.0 blocks**: Removed from tracking
 
-### Clases Principales
+### Main Classes
 
-- **`SorterHopperPlugin`**: Clase principal
-  - Registra la receta de fabricación
-  - Gestiona identificación de Sorter Hoppers usando `PersistentDataContainer`
-  - Inicia el sistema de tracking continuo
+- **`SorterHopperPlugin`**: Main class
+  - Registers the crafting recipe
+  - Manages Sorter Hopper identification using `PersistentDataContainer`
+  - Starts the continuous tracking system
 
-- **`SorterHopperListener`**: Manejador de eventos
-  - `onItemSpawn`: Intercepta items cuando aparecen
-  - `onInventoryPickupItemEvent`: Filtra items al ser recogidos
-  - `onInventoryMoveItemEvent`: Filtra items que se mueven entre inventarios
-  - `checkNearbyItems`: Tracking continuo y atracción de items
-  - `onBlockPlace/Break`: Maneja colocación y destrucción
+- **`SorterHopperListener`**: Event handler
+  - `onItemSpawn`: Intercepts items when they spawn
+  - `onInventoryPickupItemEvent`: Filters items when being picked up
+  - `onInventoryMoveItemEvent`: Filters items moving between inventories
+  - `checkNearbyItems`: Continuous tracking and item attraction
+  - `onBlockPlace/Break`: Handles placement and destruction
 
-### Eventos Utilizados
+### Events Used
 
-| Evento | Prioridad | Propósito |
-|--------|-----------|-----------|
-| `ItemSpawnEvent` | HIGH | Interceptar items temprano |
-| `InventoryPickupItemEvent` | HIGHEST | Filtrado final antes de recoger |
-| `InventoryMoveItemEvent` | NORMAL | Filtrado de transferencias entre inventarios |
-| `BlockPlaceEvent` | NORMAL | Marcar bloques como sorterHopper |
-| `BlockBreakEvent` | NORMAL | Restaurar item especial |
+| Event | Priority | Purpose |
+|-------|----------|---------|
+| `ItemSpawnEvent` | HIGH | Early item interception |
+| `InventoryPickupItemEvent` | HIGHEST | Final filtering before pickup |
+| `InventoryMoveItemEvent` | NORMAL | Filtering transfers between inventories |
+| `BlockPlaceEvent` | NORMAL | Mark blocks as sorterHopper |
+| `BlockBreakEvent` | NORMAL | Restore special item |
 
-## 📊 Rendimiento
+## 📊 Performance
 
-- **Tracking continuo**: Cada tick (20 veces por segundo)
-- **Área de detección**: Hasta 5 bloques de radio
-- **Predicción**: Hasta 6 ticks adelante para items rápidos
-- **Eficiencia**: >90% de captura en condiciones normales
+- **Continuous tracking**: Every tick (20 times per second)
+- **Detection area**: Up to 5 blocks radius
+- **Prediction**: Up to 6 ticks ahead for fast items
+- **Efficiency**: >90% capture rate under normal conditions
 
-## 🔍 Sistema de Filtrado
+## 🔍 Filtering System
 
-El filtrado usa `ItemStack.isSimilar()` que compara:
-- Tipo de material
-- Metadatos (nombre, lore, encantamientos)
-- Datos persistentes
-- Cantidad (no se compara)
+Filtering uses `ItemStack.isSimilar()` which compares:
+- Material type
+- Metadata (name, lore, enchantments)
+- Persistent data
+- Amount (not compared)
 
-## 📝 Notas Técnicas
+## 📝 Technical Notes
 
-- Usa `PersistentDataContainer` para marcar bloques como Sorter Hoppers
-- El tracking continuo se ejecuta cada tick para máxima responsividad
-- Los items rechazados simplemente se ignoran (no se empujan)
-- Sistema optimizado para items rápidos y múltiples items simultáneos
+- Uses `PersistentDataContainer` to mark blocks as Sorter Hoppers
+- Continuous tracking runs every tick for maximum responsiveness
+- Rejected items are simply ignored (not pushed)
+- System optimized for fast items and multiple simultaneous items
 
-## 🐛 Solución de Problemas
+## 🐛 Troubleshooting
 
-### El hopper no recoge items
+### Hopper doesn't collect items
 
-1. Verifica que el hopper sea un Sorter Hopper (crafteado correctamente)
-2. Verifica que el filtro tenga items configurados
-3. Verifica que los items coincidan exactamente (mismo tipo, metadatos, etc.)
+1. Verify the hopper is a Sorter Hopper (correctly crafted)
+2. Verify the filter has configured items
+3. Verify items match exactly (same type, metadata, etc.)
 
-### Items pasan de largo
+### Items pass by
 
-- El sistema de atracción debería capturarlos automáticamente
-- Si persiste, verifica que el hopper tenga espacio en su inventario
+- The attraction system should capture them automatically
+- If it persists, verify the hopper has space in its inventory
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto es código privado. Todos los derechos reservados.
+This project is private code. All rights reserved.
 
-## 👨‍💻 Desarrollo
+## 👨‍💻 Development
 
-### Estructura del Proyecto
+### Project Structure
 
 ```
 devplugins/
 ├── src/main/java/com/example/sorterhopper/
-│   ├── SorterHopperPlugin.java    # Clase principal
-│   └── SorterHopperListener.java  # Manejador de eventos
+│   ├── SorterHopperPlugin.java    # Main class
+│   └── SorterHopperListener.java  # Event handler
 ├── src/main/resources/
-│   └── plugin.yml                 # Configuración del plugin
-├── pom.xml                        # Configuración Maven
-└── tools/                         # Maven incluido
+│   └── plugin.yml                 # Plugin configuration
+├── pom.xml                        # Maven configuration
+└── tools/                         # Included Maven
 ```
 
-### Contribuir
+### Contributing
 
-Este es un proyecto privado. Para cambios o mejoras, contacta al mantenedor.
+This is a private project. For changes or improvements, contact the maintainer.

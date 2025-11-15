@@ -1,0 +1,67 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - Spigot-1.21.10
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+      
+      - name: Get version from pom.xml
+        id: version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed 's/-SNAPSHOT//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+      
+      - name: Get commit SHA
+        id: commit
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/sorterhopper-*.jar
+          tag: v${{ steps.version.outputs.version }}-${{ steps.commit.outputs.sha }}
+          name: Release v${{ steps.version.outputs.version }}-${{ steps.commit.outputs.sha }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          body: |
+            ## Changes
+            - Improved item absorption system with continuous tracking
+            - Item attraction system for accepted items
+            - Direct teleportation for items very close to hopper
+            - Early interception with ItemSpawnEvent
+            - Multi-layer filtering for maximum efficiency
+            
+            ## Installation
+            1. Download `SorterHopper.jar` from the assets below
+            2. Place it in your server's `plugins/` folder
+            3. Restart your server
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
